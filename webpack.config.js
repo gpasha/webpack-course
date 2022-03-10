@@ -3,19 +3,47 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 
 module.exports = {
+  context: path.resolve(__dirname, 'src'),
   mode: 'development',
   entry: {
-    main: './src/index.js',
-    analyticks: './src/analytics.js'
+    main: './index.js',
+    analyticks: './analytics.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].bundle.js'
+    filename: '[name].[contenthash].bundle.js',
+    assetModuleFilename: 'src/assets/[name].[ext]'
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: './src/index.html'
+      template: './index.html'
     }),
     new CleanWebpackPlugin()
-  ]
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpg|jpeg|svg|gif)$/,
+        type: 'asset/resource'
+      },
+      {
+        test: /\.(ttf|woff|woff2|eot)$/,
+        use: {
+          loader: 'url-loader',
+        },
+      },
+      {
+        test: /\.xml$/,
+        use: ['xml-loader']
+      },
+      {
+        test: /\.csv$/,
+        use: ['csv-loader']
+      }
+    ]
+  }
 }
